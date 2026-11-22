@@ -27,8 +27,8 @@
     background-size:44px 44px;}
   .tickerbar{position:sticky;top:0;z-index:10;background:rgba(5,13,31,.85);backdrop-filter:blur(12px);
     border-bottom:1px solid var(--line);overflow:hidden;white-space:nowrap;padding:9px 0}
-  .ticker{display:inline-block;animation:scroll 45s linear infinite;padding-left:100%}
-  @keyframes scroll{0%{transform:translateX(0)}100%{transform:translateX(-100%)}}
+  .ticker{display:inline-flex;animation:scroll 40s linear infinite;will-change:transform}
+  @keyframes scroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
   .tk{display:inline-flex;align-items:center;gap:7px;margin:0 22px;font-size:13px}
   .tk b{font-family:'JetBrains Mono',monospace}
   .up{color:var(--green)} .down{color:var(--red)}
@@ -72,10 +72,10 @@
 </style>
 </head>
 <body>
-<div class="tickerbar"><div class="ticker" id="ticker"><span class="tk" style="color:var(--dim)">Memuat data live CoinMarketCap...</span></div></div>
+<div class="tickerbar"><div class="ticker" id="ticker"><span class="tk" style="color:var(--dim)">Memuat data live CoinMarketCap ...</span></div></div>
 <div class="wrap">
   <header>
-    <div class="logo">&#127754;</div>
+    <div class="logo"><svg width="34" height="34" viewBox="0 0 24 24" fill="none"><path d="M2 14c2.5 0 2.5 2 5 2s2.5-2 5-2 2.5 2 5 2 2.5-2 5-2" stroke="white" stroke-width="2" stroke-linecap="round"/><path d="M2 9c2.5 0 2.5 2 5 2s2.5-2 5-2 2.5 2 5 2 2.5-2 5-2" stroke="rgba(255,255,255,.65)" stroke-width="2" stroke-linecap="round"/></svg></div>
     <div>
       <h1>Samudra</h1>
       <div class="sub">Crypto AI agent berbahasa Indonesia &middot; setiap angka live dari CoinMarketCap</div>
@@ -99,12 +99,12 @@
   </div>
 
   <div id="chat">
-    <div class="msg bot">Halo! Saya Samudra &#127754; Tanya apa saja soal harga dan pasar kripto, saya jawab dengan data live dari CoinMarketCap.<span class="src">source: CoinMarketCap API</span></div>
+    <div class="msg bot">Halo! Saya Samudra. Tanya apa saja soal harga dan pasar kripto, saya jawab dengan data live dari CoinMarketCap.<span class="src">source: CoinMarketCap API</span></div>
   </div>
 
   <form id="f">
     <input id="q" placeholder="Misal: berapa harga bitcoin sekarang?" autocomplete="off">
-    <button class="send" type="submit">Kirim &#10148;</button>
+    <button class="send" type="submit">Kirim</button>
   </form>
   <footer>Dibangun untuk "Build with CMC: API Hackathon Round 2" &middot; bukan nasihat keuangan</footer>
 </div>
@@ -134,7 +134,8 @@ async function refreshTicker(){
   try{
     const r=await fetch('/api/ticker'); const j=await r.json();
     if(j.error) return;
-    $('ticker').innerHTML=j.coins.map(c=>`<span class="tk">${c.name} <b>${usd(c.price)}</b> ${pct(c.pct)}</span>`).join('');
+    const items=j.coins.map(c=>`<span class="tk">${c.name} <b>${usd(c.price)}</b> ${pct(c.pct)}</span>`).join('');
+    $('ticker').innerHTML=items+items;
     $('s-mcap').textContent=big(j.global.mcap); $('s-mcap-d').innerHTML=pct(j.global.mcap_chg)+' vs kemarin';
     $('s-btcd').textContent=j.global.btc_dom.toFixed(1)+'%'; $('s-ethd').textContent='ETH '+j.global.eth_dom.toFixed(1)+'%';
     $('s-vol').textContent=big(j.global.vol);
