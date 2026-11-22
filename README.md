@@ -75,3 +75,7 @@ curl -X POST http://localhost:3456/api/ask \
 - Not financial advice.
 - Built by [@Jarvis-184](https://github.com/Jarvis-184) for the
   [Build with CMC: API Hackathon, Round 2](https://dorahacks.io/hackathon/coinmarketcap-api-202611).
+
+## Demo video
+
+[`demo/cmc_samudra_demo.mp4`](demo/cmc_samudra_demo.mp4) - 30 detik: harga BTC live, konversi DOGE ke rupiah, top 5, dominansi pasar, tanya-jawab bebas berbahasa Indonesia, dan bukti respons JSON mentah dari API.
