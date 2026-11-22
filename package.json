@@ -1,0 +1,10 @@
+{
+  "name": "samudra",
+  "version": "1.0.0",
+  "description": "Samudra - an Indonesian-first crypto AI agent powered by the CoinMarketCap API",
+  "main": "server.js",
+  "type": "module",
+  "scripts": { "start": "node server.js" },
+  "license": "MIT",
+  "dependencies": {}
+}

@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Samudra - Crypto AI Agent (CoinMarketCap API)</title>
+<style>
+  :root{
+    --bg1:#071a3d; --bg2:#0a2547; --card:#0d2b52; --line:#1d467c;
+    --cmc:#3861fb; --cmc2:#16c784; --txt:#eaf2ff; --dim:#9db4d8;
+  }
+  *{box-sizing:border-box;margin:0}
+  body{
+    font-family:'Segoe UI',system-ui,sans-serif;color:var(--txt);min-height:100vh;
+    background:
+      radial-gradient(900px 500px at 85% -10%, rgba(56,97,251,.35), transparent 60%),
+      radial-gradient(700px 400px at -10% 110%, rgba(22,199,132,.18), transparent 60%),
+      linear-gradient(160deg,var(--bg1),var(--bg2));
+    padding:24px;
+  }
+  .wrap{max-width:860px;margin:0 auto}
+  header{display:flex;align-items:center;gap:14px;margin-bottom:18px}
+  .logo{width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,var(--cmc),#6d8bff);
+    display:flex;align-items:center;justify-content:center;font-size:28px;box-shadow:0 6px 24px rgba(56,97,251,.45)}
+  h1{font-size:26px;letter-spacing:.5px}
+  .sub{color:var(--dim);font-size:13px}
+  .live{margin-left:auto;font-size:12px;color:#0d2b52;background:var(--cmc2);padding:5px 12px;border-radius:999px;font-weight:700}
+  .chart{margin:6px 0 18px;height:54px;width:100%}
+  .quick{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+  .quick button{background:var(--card);border:1px solid var(--line);color:var(--txt);padding:8px 14px;border-radius:999px;cursor:pointer;font-size:13px}
+  .quick button:hover{border-color:var(--cmc);background:#123668}
+  #chat{display:flex;flex-direction:column;gap:12px;min-height:300px;margin-bottom:14px}
+  .msg{max-width:82%;padding:12px 16px;border-radius:16px;line-height:1.55;font-size:15px;white-space:pre-wrap}
+  .me{align-self:flex-end;background:linear-gradient(135deg,var(--cmc),#5575ff);border-bottom-right-radius:4px}
+  .bot{align-self:flex-start;background:var(--card);border:1px solid var(--line);border-bottom-left-radius:4px}
+  .src{display:block;margin-top:8px;font-size:11px;color:var(--dim);border-top:1px dashed var(--line);padding-top:6px}
+  form{display:flex;gap:10px}
+  input{flex:1;background:var(--card);border:1px solid var(--line);border-radius:12px;color:var(--txt);padding:14px 16px;font-size:15px;outline:none}
+  input:focus{border-color:var(--cmc)}
+  .send{background:var(--cmc);border:0;color:#fff;padding:0 26px;border-radius:12px;font-size:16px;cursor:pointer;font-weight:700}
+  footer{margin-top:18px;color:var(--dim);font-size:12px;text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="logo">&#127754;</div>
+    <div>
+      <h1>Samudra</h1>
+      <div class="sub">Crypto AI agent berbahasa Indonesia &middot; data live CoinMarketCap</div>
+    </div>
+    <div class="live">&#9679; LIVE - CoinMarketCap API</div>
+  </header>
+
+  <svg class="chart" viewBox="0 0 860 54" preserveAspectRatio="none">
+    <defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#16c784" stop-opacity=".35"/><stop offset="1" stop-color="#16c784" stop-opacity="0"/>
+    </linearGradient></defs>
+    <path d="M0,44 L70,40 L140,45 L210,34 L280,38 L350,26 L430,30 L500,18 L570,22 L650,10 L720,14 L790,4 L860,8 L860,54 L0,54 Z" fill="url(#g)"/>
+    <path d="M0,44 L70,40 L140,45 L210,34 L280,38 L350,26 L430,30 L500,18 L570,22 L650,10 L720,14 L790,4 L860,8" fill="none" stroke="#16c784" stroke-width="2.5"/>
+    <path d="M845,-4 l18,12 l-18,12" fill="none" stroke="#16c784" stroke-width="2.5" transform="translate(-8 0)"/>
+  </svg>
+
+  <div class="quick">
+    <button>Harga Bitcoin</button>
+    <button>10 dogecoin ke rupiah</button>
+    <button>Top 5 koin</button>
+    <button>Dominansi BTC</button>
+    <button>Bandingkan ETH vs SOL</button>
+    <button>Lagi trending apa?</button>
+  </div>
+
+  <div id="chat">
+    <div class="msg bot">Halo! Saya Samudra. Tanya apa saja soal harga dan pasar kripto, saya jawab dengan data live dari CoinMarketCap.<span class="src">Sumber: CoinMarketCap API</span></div>
+  </div>
+
+  <form id="f">
+    <input id="q" placeholder="Misal: berapa harga bitcoin sekarang?" autocomplete="off">
+    <button class="send" type="submit">Kirim</button>
+  </form>
+  <footer>Dibangun untuk "Build with CMC: API Hackathon Round 2" &middot; bukan nasihat keuangan</footer>
+</div>
+<script>
+const chat=document.getElementById('chat'), f=document.getElementById('f'), q=document.getElementById('q');
+function add(text, me, src){
+  const d=document.createElement('div'); d.className='msg '+(me?'me':'bot'); d.textContent=text;
+  if(src){const s=document.createElement('span'); s.className='src'; s.textContent=src; d.appendChild(s);}
+  chat.appendChild(d); d.scrollIntoView({behavior:'smooth'});
+}
+async function ask(text){
+  add(text,true);
+  const wait=document.createElement('div'); wait.className='msg bot'; wait.textContent='Mengambil data live CoinMarketCap...'; chat.appendChild(wait);
+  try{
+    const r=await fetch('/api/ask',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({q:text})});
+    const j=await r.json(); wait.remove();
+    if(j.error) add('Maaf, ada kendala: '+j.error,false);
+    else add(j.text,false,'Sumber: '+(j.source||'CoinMarketCap API')+(j.endpoints?.length?' | '+j.endpoints.join(', '):''));
+  }catch(e){wait.remove(); add('Gagal terhubung ke server.',false);}
+}
+f.addEventListener('submit',e=>{e.preventDefault(); if(q.value.trim()){ask(q.value.trim()); q.value='';}});
+document.querySelectorAll('.quick button').forEach(b=>b.addEventListener('click',()=>ask(b.textContent)));
+</script>
+</body>
+</html>
