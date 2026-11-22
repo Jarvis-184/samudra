@@ -151,10 +151,10 @@ const PAGE = (await import('node:fs')).readFileSync(new URL('./public/index.html
 
 http.createServer(async (req, res) => {
   const u = new URL(req.url, 'http://x');
-  if (u.pathname === '/api/ask' && req.method === 'POST') {
+  if (u.pathname === '/api/ask' && (req.method === 'POST' || (req.method === 'GET' && u.searchParams.get('q')))) {
     let body=''; for await (const c of req) body+=c;
     try {
-      const { q } = JSON.parse(body||'{}');
+      const q = req.method === 'GET' ? u.searchParams.get('q') : JSON.parse(body||'{}').q;
       if (!q) throw new Error('empty question');
       const out = await answer(q);
       res.writeHead(200, {'Content-Type':'application/json'});
