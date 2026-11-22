@@ -165,6 +165,21 @@ http.createServer(async (req, res) => {
     }
     return;
   }
+  if (u.pathname === '/api/ticker') {
+    try {
+      const [list, gm] = await Promise.all([
+        cmc('/v1/cryptocurrency/listings/latest', { limit: 10, convert: 'USD' }),
+        cmc('/v1/global-metrics/quotes/latest', {})
+      ]);
+      res.writeHead(200, {'Content-Type':'application/json'});
+      res.end(JSON.stringify({
+        coins: list.map(c=>({name:c.symbol, price:c.quote.USD.price, pct:c.quote.USD.percent_change_24h})),
+        global: { mcap: gm.quote.USD.total_market_cap, mcap_chg: gm.quote.USD.total_market_cap_yesterday_percentage_change,
+                  btc_dom: gm.btc_dominance, eth_dom: gm.eth_dominance, vol: gm.quote.USD.total_volume_24h }
+      }));
+    } catch (e) { res.writeHead(200, {'Content-Type':'application/json'}); res.end(JSON.stringify({ error:String(e.message||e) })); }
+    return;
+  }
   if (u.pathname === '/api/health') {
     try { const d = await cmc('/v1/global-metrics/quotes/latest', {}); res.end(JSON.stringify({ ok:true, btc_dom:d.btc_dominance })); }
     catch (e) { res.writeHead(500); res.end(JSON.stringify({ ok:false, error:String(e) })); }
